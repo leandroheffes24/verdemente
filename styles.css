@@ -10,7 +10,7 @@
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; overflow-x: hidden; }
 
 body {
   font-family: 'Plus Jakarta Sans', sans-serif;
@@ -756,7 +756,7 @@ footer {
 ────────────────────────────────────────── */
 .wa-float {
   position: fixed;
-  bottom: 50px;
+  bottom: 28px;
   right: 28px;
   z-index: 999;
   background: #25d366;
