@@ -756,7 +756,7 @@ footer {
 ────────────────────────────────────────── */
 .wa-float {
   position: fixed;
-  bottom: 28px;
+  bottom: 50px;
   right: 28px;
   z-index: 999;
   background: #25d366;
@@ -837,6 +837,7 @@ footer {
   .contacto-grid { grid-template-columns: 1fr; }
   footer { padding: 40px 24px; flex-direction: column; text-align: center; }
   .footer-copy { text-align: center; }
+  .gallery-item { min-height: 200px; }
 }
 
 .nav-logo img {
