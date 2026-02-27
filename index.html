@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verdemente – Verdulería & Dietética</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,400&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" type="image/ico" href="./assets/favicon/favicon.ico">
+
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <a href="#inicio" class="nav-logo">
+    <img src="./assets/images/logo.png" alt="Verdemente logo">
+  </a>
+  <ul class="nav-links">
+    <li><a href="#productos">Productos</a></li>
+    <li><a href="#galeria">Galería</a></li>
+    <li><a href="#nosotros">Nosotros</a></li>
+    <li><a href="#contacto">Ubicación</a></li>
+    <li><a class="nav-cta" href="https://wa.me/5491159391818" target="_blank">💬 WhatsApp</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="inicio">
+  <div class="hero-bg-circle c1"></div>
+  <div class="hero-bg-circle c2"></div>
+
+  <div class="hero-text">
+    <div class="hero-badge">Verdulería & Dietética · Colonia San Miguel Arcángel</div>
+    <h1 class="hero-title">
+      Encontrá lo que<br><em>no encontrás</em><br>en ningún otro lado
+    </h1>
+    <p class="hero-sub">
+      La mayor variedad de frutas, verduras y productos de dietética de la zona. Frescos, naturales, y listos para transformar tu mesa.
+    </p>
+    <div class="hero-actions">
+      <a class="btn-primary" href="#productos">🥦 Ver productos</a>
+      <a class="btn-secondary" href="#contacto">📍 Cómo llegar</a>
+    </div>
+    <div class="hero-hours">
+      <div class="hour-badge">
+        <strong>8 a 12 hs</strong>
+        Mañana
+      </div>
+      <div class="hour-badge">
+        <strong>16 a 21 hs</strong>
+        Tarde
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    <div class="hero-img-frame">
+      <img src="https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=600&q=80" alt="Frutas y verduras frescas" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.55;">
+    </div>
+    <div class="floating-fruits">
+      <span class="ff">🍎</span>
+      <span class="ff">🍋</span>
+      <span class="ff">🥕</span>
+      <span class="ff">🫐</span>
+      <span class="ff">🌽</span>
+    </div>
+  </div>
+</section>
+
+<!-- DIFERENCIAL -->
+<section id="diferencial">
+  <div class="dif-inner">
+    <h2 class="dif-title">Más que una verdulería.<br><span>Una experiencia verde.</span></h2>
+    <p class="dif-sub">Dos mundos en un solo lugar: la frescura de la verdulería y la profundidad de la dietética. Con una variedad que te va a sorprender en cada visita.</p>
+    <div class="dif-pillars">
+      <div class="pillar">
+        <div class="pillar-icon">🌿</div>
+        <h3>Variedad única</h3>
+        <p>Frutas y verduras de temporada más variedades difíciles de conseguir en la zona.</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-icon">🌾</div>
+        <h3>Dietética completa</h3>
+        <p>Semillas, harinas, aceites, legumbres, frutos secos y mucho más para una vida más sana.</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-icon">❤️</div>
+        <h3>Atención cercana</h3>
+        <p>Un local donde te conocen, te recomiendan y siempre hay algo nuevo para descubrir.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTOS -->
+<section id="productos">
+  <div class="section-label">Lo que encontrás</div>
+  <h2 class="section-title">Productos para cada necesidad</h2>
+  <p class="section-sub">Desde la verdura más fresca hasta el ingrediente más especial de tu receta saludable.</p>
+
+  <div class="productos-tabs">
+    <button class="tab active" onclick="showTab('verdura')">🥦 Verdulería</button>
+    <button class="tab" onclick="showTab('dietetica')">🌾 Dietética</button>
+  </div>
+
+  <div id="tab-verdura" class="products-grid">
+    <div class="product-card reveal">
+      <div class="product-img">
+        <img src="https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=400&q=75" alt="Tomates">
+        <span class="product-emoji">🍅</span>
+      </div>
+      <div class="product-info"><h4>Tomates</h4><p>De temporada, frescos cada día</p></div>
+    </div>
+    <div class="product-card reveal">
+      <div class="product-img">
+        <img src="https://images.unsplash.com/photo-1603833665858-e61d17a86224?w=400&q=75" alt="Zanahorias">
+        <span class="product-emoji">🥕</span>
+      </div>
+      <div class="product-info"><h4>Zanahorias</h4><p>Ideales para jugos y ensaladas</p></div>
+    </div>
+    <div class="product-card reveal">
+      <div class="product-img">
+        <img src="https://images.unsplash.com/photo-1597362925123-77861d3fbac7?w=400&q=75" alt="Espinaca">
+        <span class="product-emoji">🥬</span>
+      </div>
+      <div class="product-info"><h4>Hojas verdes</h4><p>Espinaca, rúcula, kale y más</p></div>
+    </div>
+    <div class="product-card reveal">
+      <div class="product-img">
+        <img src="https://images.unsplash.com/photo-1550258987-190a2d41a8ba?w=400&q=75" alt="Frutas">
+        <span class="product-emoji">🍎</span>
+      </div>
+      <div class="product-info"><h4>Frutas frescas</h4><p>Gran variedad todo el año</p></div>
+    </div>
+    <div class="product-card reveal">
+      <div class="product-img">
+        <img src="https://images.unsplash.com/photo-1601004890657-a6a4fc9bf7e1?w=400&q=75" alt="Palta">
+        <span class="product-emoji">🥑</span>
+      </div>
+      <div class="product-info"><h4>Palta</h4><p>En su punto perfecto</p></div>
+    </div>
+    <div class="product-card reveal">
+      <div class="product-img">
+        <img src="https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=400&q=75" alt="Papa">
+        <span class="product-emoji">🥔</span>
+      </div>
+      <div class="product-info"><h4>Tubérculos</h4><p>Papa, batata, mandioca y más</p></div>
+    </div>
+  </div>
+
+  <div id="tab-dietetica" class="products-grid" style="display:none;">
+    <div class="product-card reveal">
+      <div class="product-img">
+        <img src="https://images.unsplash.com/photo-1612257416948-673d1e116c3e?w=400&q=75" alt="Semillas">
+        <span class="product-emoji">🌻</span>
+      </div>
+      <div class="product-info"><h4>Semillas</h4><p>Chía, lino, girasol, sésamo y más</p></div>
+    </div>
+    <div class="product-card reveal">
+      <div class="product-img">
+        <img src="https://images.unsplash.com/photo-1578020190125-f4f7c18bc9cb?w=400&q=75" alt="Harinas">
+        <span class="product-emoji">🌾</span>
+      </div>
+      <div class="product-info"><h4>Harinas</h4><p>Integral, de almendra, garbanzo y más</p></div>
+    </div>
+    <div class="product-card reveal">
+      <div class="product-img">
+        <img src="https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=400&q=75" alt="Aceites">
+        <span class="product-emoji">🫒</span>
+      </div>
+      <div class="product-info"><h4>Aceites</h4><p>De oliva, coco, lino y más</p></div>
+    </div>
+    <div class="product-card reveal">
+      <div class="product-img">
+        <img src="https://images.unsplash.com/photo-1515543904379-3d757afe72e4?w=400&q=75" alt="Frutos secos">
+        <span class="product-emoji">🥜</span>
+      </div>
+      <div class="product-info"><h4>Frutos secos</h4><p>Nueces, almendras, castañas y más</p></div>
+    </div>
+    <div class="product-card reveal">
+      <div class="product-img">
+        <img src="https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=400&q=75" alt="Legumbres">
+        <span class="product-emoji">🫘</span>
+      </div>
+      <div class="product-info"><h4>Legumbres</h4><p>Lentejas, garbanzos, porotos y más</p></div>
+    </div>
+    <div class="product-card reveal">
+      <div class="product-img">
+        <img src="https://images.unsplash.com/photo-1556227702-d1e4e7b5c232?w=400&q=75" alt="Cereales">
+        <span class="product-emoji">🌾</span>
+      </div>
+      <div class="product-info"><h4>Cereales & granos</h4><p>Quinoa, avena, arroz integral y más</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- GALERÍA -->
+<section id="galeria" class="reveal">
+  <div class="section-label">El local</div>
+  <h2 class="section-title">Pasá a visitarnos</h2>
+  <p class="section-sub" style="margin-bottom: 40px;">Un espacio pensado para que disfrutes explorando. Colores, aromas y productos que invitan a quedarse.</p>
+
+  <div class="gallery-grid">
+    <div class="gallery-item">
+      <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&q=80" alt="Verdulería">
+      <span class="gallery-label">🛒 Verdulería</span>
+    </div>
+    <div class="gallery-item">
+      <img src="https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=400&q=75" alt="Frutas">
+      <span class="gallery-label">🍊 Frutas</span>
+    </div>
+    <div class="gallery-item">
+      <img src="https://images.unsplash.com/photo-1466637574441-749b8f19452f?w=400&q=75" alt="Dietética">
+      <span class="gallery-label">🌿 Dietética</span>
+    </div>
+    <div class="gallery-item">
+      <img src="https://images.unsplash.com/photo-1601004890657-a6a4fc9bf7e1?w=400&q=75" alt="Productos frescos">
+      <span class="gallery-label">✨ Frescos</span>
+    </div>
+    <div class="gallery-item">
+      <img src="https://images.unsplash.com/photo-1515543904379-3d757afe72e4?w=400&q=75" alt="Frutos secos">
+      <span class="gallery-label">🥜 A granel</span>
+    </div>
+  </div>
+</section>
+
+<!-- NOSOTROS -->
+<section id="nosotros">
+  <div class="nosotros-visual reveal">
+    <div class="nosotros-img-main">
+      <img src="https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=700&q=80" alt="Local Verdemente">
+      <span style="position:relative;z-index:2;font-size:5rem;">🌱</span>
+    </div>
+    <div class="nosotros-chip">
+      <span>🏆</span>
+      La mayor<br>variedad<br>de la zona
+    </div>
+  </div>
+
+  <div class="nosotros-text reveal">
+    <div class="section-label">Quiénes somos</div>
+    <h2 class="section-title">Verdemente nació para darte más opciones</h2>
+    <p class="section-sub">
+      Somos un local que une lo mejor de la verdulería tradicional con la amplitud de la dietética moderna. Porque creemos que comer bien no debería ser difícil ni aburrido.
+      <br><br>
+      En Colonia San Miguel Arcángel, te ofrecemos una variedad que no vas a encontrar en otro lugar.
+    </p>
+    <div class="values-list">
+      <div class="value-item">
+        <span class="value-icon">🥦</span>
+        <div>
+          <h4>Variedad que sorprende</h4>
+          <p>Desde lo cotidiano hasta lo que no esperabas encontrar. Siempre algo nuevo.</p>
+        </div>
+      </div>
+      <div class="value-item">
+        <span class="value-icon">🌿</span>
+        <div>
+          <h4>Productos saludables y naturales</h4>
+          <p>Seleccionados para que puedas armar la alimentación que querés.</p>
+        </div>
+      </div>
+      <div class="value-item">
+        <span class="value-icon">🤝</span>
+        <div>
+          <h4>Atención personalizada</h4>
+          <p>Siempre hay alguien para recomendarte y ayudarte a encontrar lo que buscás.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACTO -->
+<section id="contacto">
+  <div class="section-label reveal">Contacto & Horarios</div>
+  <h2 class="section-title reveal">Visitanos o escribinos</h2>
+
+  <div class="contacto-grid">
+    <div class="contact-card reveal">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center;">
+        <div>
+          <div class="contact-card-icon icon-wa">📍</div>
+          <h3>Dónde estamos</h3>
+          <p style="margin-bottom:0;">Av. 9 de Julio<br>Colonia San Miguel Arcángel<br>Buenos Aires, Argentina</p>
+        </div>
+        <div>
+          <div class="map-placeholder">
+            <span>🗺️</span>
+            <span>Av. 9 de Julio · Colonia San Miguel Arcángel</span>
+          </div>
+          <a href="https://maps.app.goo.gl/sZyWDneMM3xJBEE5A" target="_blank" style="display:inline-flex;align-items:center;gap:8px;margin-top:12px;font-weight:600;font-size:0.92rem;text-decoration:none;color:var(--verde-oscuro);">
+            Ver en Google Maps →
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="contact-card reveal">
+      <div class="contact-card-icon icon-green">🕐</div>
+      <h3>Horarios de atención</h3>
+      <p>Abrimos en dos turnos para que siempre puedas pasar cuando mejor te quede.</p>
+      <div class="horario-grid">
+        <div class="horario-item">
+          <div class="h-time">8 – 12 hs</div>
+          <div class="h-label">TURNO MAÑANA</div>
+        </div>
+        <div class="horario-item">
+          <div class="h-time">16 – 21 hs</div>
+          <div class="h-label">TURNO TARDE</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="contact-card reveal">
+      <div class="contact-card-icon icon-wa">💬</div>
+      <h3>WhatsApp</h3>
+      <p>Escribinos para consultas, pedidos o lo que necesites. Respondemos a la brevedad.</p>
+      <a class="btn-wa" href="https://wa.me/5491159391818" target="_blank">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.557 4.116 1.533 5.845L.057 23.5a.5.5 0 0 0 .61.61l5.701-1.486A11.94 11.94 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.794 9.794 0 0 1-5.007-1.378l-.36-.213-3.724.97.993-3.649-.234-.374A9.794 9.794 0 0 1 2.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/></svg>
+        Escribir al WhatsApp
+      </a>
+    </div>
+
+    <div class="contact-card reveal">
+      <div class="contact-card-icon icon-ig">📸</div>
+      <h3>Instagram</h3>
+      <p>Seguinos para ver novedades, productos del día, ofertas y todo lo que llega al local.</p>
+      <a href="https://instagram.com/verdementesma" target="_blank" style="font-size:1rem;font-weight:700;color:var(--verde-oscuro);">
+        @verdemente →
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-logo">
+      <img src="./assets/images/logo.png" alt="Verdemente logo">
+    </div>
+    <div class="footer-tagline">Verdulería & Dietética · Colonia San Miguel Arcángel</div>
+  </div>
+  <ul class="footer-links">
+    <li><a href="#inicio">Inicio</a></li>
+    <li><a href="#productos">Productos</a></li>
+    <li><a href="#galeria">Galería</a></li>
+    <li><a href="#nosotros">Nosotros</a></li>
+    <li><a href="#contacto">Contacto</a></li>
+  </ul>
+  <div class="footer-copy">
+  © 2026 Verdemente<br>Todos los derechos reservados<br><br>
+  <span style="opacity:0.6;">Desarrollado por</span>
+  <a href="https://www.leandroheffes.com" target="_blank" style="color:var(--verde-claro);text-decoration:none;font-weight:600;">Leandro Heffes</a>
+</div>
+</footer>
+
+<!-- WA FLOAT BUTTON -->
+<a class="wa-float" href="https://wa.me/5491159391818" target="_blank" title="Escribinos por WhatsApp">
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.557 4.116 1.533 5.845L.057 23.5a.5.5 0 0 0 .61.61l5.701-1.486A11.94 11.94 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.794 9.794 0 0 1-5.007-1.378l-.36-.213-3.724.97.993-3.649-.234-.374A9.794 9.794 0 0 1 2.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/></svg>
+</a>
+
+<script src="main.js"></script>
+</body>
+</html>
