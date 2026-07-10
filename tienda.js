@@ -343,11 +343,13 @@ function abrirCarrito() {
   irAPaso('items');
   $('#cartDrawer').classList.add('open');
   $('#cartOverlay').classList.add('open');
+  document.body.classList.add('cart-abierto');
   document.body.style.overflow = 'hidden';
 }
 function cerrarCarrito() {
   $('#cartDrawer').classList.remove('open');
   $('#cartOverlay').classList.remove('open');
+  document.body.classList.remove('cart-abierto');
   document.body.style.overflow = '';
 }
 function irAPaso(paso) {

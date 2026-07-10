@@ -27,6 +27,8 @@
 .fb-btn span { font-size: 1.05rem; line-height: 1; }
 /* Cuando hay botón de WhatsApp flotante, se ubica encima */
 .fb-btn--stacked { bottom: 100px; }
+/* Se esconde mientras el carrito está abierto (no tapar el panel del carrito) */
+body.cart-abierto .fb-btn { opacity: 0; visibility: hidden; pointer-events: none; }
 
 /* ── Overlay + modal ── */
 .fb-overlay {
