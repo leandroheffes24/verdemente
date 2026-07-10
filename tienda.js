@@ -17,9 +17,10 @@ const DIRECCION_LOCAL = 'Av. 9 de Julio 863, Colonia San Miguel Arcángel';
 const STORAGE_KEY = 'verdemente_carrito';
 let PRODUCTOS = [];                     // catálogo vivo (Supabase o semilla)
 let CATEGORIAS_DB = [];                 // categorías (nombre + orden) desde Supabase
-let carrito = cargarCarrito();          // { [id]: cantidad }
+let carrito = cargarCarrito();          // { [claveItem]: cantidad }
 let filtroCategoria = 'todos';
 let busqueda = '';
+let medidaSeleccionada = {};            // { [idProducto]: 'kg' | 'un' | 'base' } (para productos duales)
 
 function cargarCarrito() {
   try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
@@ -41,29 +42,77 @@ function fmtDinero(n) {
   return '$' + Math.round(n).toLocaleString('es-AR');
 }
 
-// Config de cantidad según se venda por peso o por unidad
-function cfgUnidad(p) {
-  return p.porPeso
-    ? { step: 0.5, min: 0.5, decimals: 1 }
-    : { step: 1,   min: 1,   decimals: 0 };
-}
-const UNIDAD_CORTA = { kg: 'kg', unidad: 'un.', atado: 'atado', docena: 'doc.' };
-const unidadCorta = (p) => UNIDAD_CORTA[p.unidad] || p.unidad;
-const unidadLarga = (p) => p.unidad;
+// ── Medidas de un producto ──
+// Un producto se vende por una sola medida, o (dual) por kg Y por unidad,
+// con un precio para cada una. El cliente elige.
+const num = (x) => { const n = Number(x); return (isFinite(n) && n > 0) ? n : null; };
 
-function fmtCantidad(cant, p) {
-  const c = cfgUnidad(p);
+function medidasDe(p) {
+  if (p.dual) {
+    const pk = num(p.precio);        // precio por kg (o null)
+    const pu = num(p.precioUnidad);  // precio por unidad (o null)
+    return [
+      descDual('kg', 'kg',     true,  pk, pu, 'unidad'),
+      descDual('un', 'unidad', false, pu, pk, 'kg'),
+    ];
+  }
+  return [{ medida: 'base', label: p.unidad, precio: Number(p.precio), porPeso: !!p.porPeso, ref: false }];
+}
+
+// Descriptor de una medida en un producto dual.
+//   propio = precio propio de esta medida (o null)
+//   otro   = precio de la otra medida (referencia)
+function descDual(medida, label, porPeso, propio, otro, refDeLabel) {
+  if (propio != null) {
+    return { medida, label, porPeso, precio: propio, ref: false };
+  }
+  // Sin precio propio → se muestra el de la otra medida como referencia
+  return {
+    medida, label, porPeso,
+    precio: (otro != null ? otro : 0),
+    ref: true,
+    refDe: refDeLabel,
+    nota: porPeso
+      ? 'Precio de referencia; el total se confirma al pesar tu pedido.'
+      : 'El precio final varía según el kilaje de las unidades que elijas.',
+  };
+}
+function medidaDe(p, medida) {
+  const ms = medidasDe(p);
+  return ms.find(m => m.medida === medida) || ms[0];
+}
+function cfgMedida(m) {
+  return m.porPeso ? { step: 0.5, min: 0.5, decimals: 1 } : { step: 1, min: 1, decimals: 0 };
+}
+
+// Clave del carrito = id + medida (para tener kg y unidad del mismo producto por separado)
+const claveItem = (id, medida) => `${id}::${medida}`;
+function parseClave(key) {
+  const i = key.lastIndexOf('::');
+  return i < 0 ? { id: key, medida: 'base' } : { id: key.slice(0, i), medida: key.slice(i + 2) };
+}
+
+const UNIDAD_CORTA = { kg: 'kg', unidad: 'un.', atado: 'atado', docena: 'doc.' };
+const labelCorto = (m) => UNIDAD_CORTA[m.label] || m.label;
+const labelLargo = (m) => m.label;
+const textoMedida = (m) => m.label === 'kg' ? 'por kg' : (m.label === 'unidad' ? 'por unidad' : ('por ' + m.label));
+
+function fmtCantidad(cant, m) {
+  const c = cfgMedida(m);
   const num = cant.toLocaleString('es-AR', { maximumFractionDigits: c.decimals });
-  return `${num} ${unidadCorta(p)}`;
+  return `${num} ${labelCorto(m)}`;
 }
 
 function totalItems() {
-  return Object.keys(carrito).filter(id => getProducto(id)).length;
+  return Object.keys(carrito).filter(k => getProducto(parseClave(k).id)).length;
 }
 function totalPedido() {
-  return Object.entries(carrito).reduce((acc, [id, cant]) => {
+  return Object.entries(carrito).reduce((acc, [key, cant]) => {
+    const { id, medida } = parseClave(key);
     const p = getProducto(id);
-    return p ? acc + p.precio * cant : acc;
+    if (!p) return acc;
+    const m = medidaDe(p, medida);
+    return m.ref ? acc : acc + m.precio * cant;   // las de referencia no suman (se cobran según kilaje)
   }, 0);
 }
 
@@ -92,7 +141,8 @@ function badgeCategoria(cat) {
 //  CARGA DE PRODUCTOS (Supabase o semilla)
 // ──────────────────────────────────────────
 function semillaConId() {
-  return PRODUCTOS_SEED.map((p, i) => ({ id: 'seed-' + i, orden: i * 10, ...p }));
+  return PRODUCTOS_SEED.map((p, i) => ({ id: 'seed-' + i, orden: i * 10, ...p }))
+    .sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }));
 }
 
 function cargarProductos() {
@@ -136,9 +186,9 @@ function trasCargar() {
 // Saca del carrito lo que ya no existe o quedó sin stock
 function limpiarCarrito() {
   let cambio = false;
-  Object.keys(carrito).forEach(id => {
-    const p = getProducto(id);
-    if (!p || p.stock === false) { delete carrito[id]; cambio = true; }
+  Object.keys(carrito).forEach(key => {
+    const p = getProducto(parseClave(key).id);
+    if (!p || p.stock === false) { delete carrito[key]; cambio = true; }
   });
   if (cambio) guardarCarrito();
 }
@@ -146,24 +196,26 @@ function limpiarCarrito() {
 // ──────────────────────────────────────────
 //  ACCIONES DEL CARRITO
 // ──────────────────────────────────────────
-function agregar(id) {
+function agregar(id, medida) {
   const p = getProducto(id);
   if (!p || p.stock === false) return;
-  carrito[id] = cfgUnidad(p).min;
+  const m = medidaDe(p, medida);
+  carrito[claveItem(id, m.medida)] = cfgMedida(m).min;
   sincronizar();
 }
-function cambiarCantidad(id, delta) {
+function cambiarCantidad(key, delta) {
+  const { id, medida } = parseClave(key);
   const p = getProducto(id);
   if (!p) return;
-  const u = cfgUnidad(p);
-  const actual = carrito[id] ?? 0;
-  let nueva = +(actual + delta * u.step).toFixed(2);
-  if (nueva < u.min) { quitar(id); return; }
-  carrito[id] = nueva;
+  const c = cfgMedida(medidaDe(p, medida));
+  const actual = carrito[key] ?? 0;
+  let nueva = +(actual + delta * c.step).toFixed(2);
+  if (nueva < c.min) { quitar(key); return; }
+  carrito[key] = nueva;
   sincronizar();
 }
-function quitar(id) {
-  delete carrito[id];
+function quitar(key) {
+  delete carrito[key];
   sincronizar();
 }
 function vaciarCarrito() {
@@ -175,7 +227,7 @@ function vaciarCarrito() {
 function sincronizar() {
   guardarCarrito();
   actualizarContador();
-  renderControlesTarjetas();
+  renderDinamicos();
   renderCarrito();
 }
 
@@ -235,46 +287,66 @@ function renderProductos() {
         <div class="store-card-body">
           <h4>${p.nombre}</h4>
           ${p.detalle ? `<p class="store-card-detalle">${p.detalle}</p>` : ''}
-          <div class="store-card-precio">
-            <span class="precio">${fmtDinero(p.precio)}</span>
-            <span class="precio-unidad">/ ${unidadLarga(p)}</span>
-          </div>
-          <div class="store-card-ctrl" data-ctrl="${p.id}"></div>
+          <div class="store-card-dyn" data-dyn="${p.id}"></div>
         </div>
       </article>
     `;
   }).join('');
 
-  renderControlesTarjetas();
+  renderDinamicos();
 }
 
-// Dibuja el botón "Agregar" o el stepper según si el producto está en el carrito.
-function renderControlesTarjetas() {
-  $$('[data-ctrl]').forEach(cont => {
-    const id = cont.dataset.ctrl;
-    const p = getProducto(id);
-    if (!p) return;
+// Redibuja la zona dinámica de cada tarjeta (selector de medida + precio + control)
+function renderDinamicos() {
+  $$('[data-dyn]').forEach(pintarDinamico);
+}
 
-    if (p.stock === false) {
-      cont.innerHTML = `<button class="btn-agregar" disabled>Sin stock</button>`;
-      return;
-    }
+function pintarDinamico(cont) {
+  const id = cont.dataset.dyn;
+  const p = getProducto(id);
+  if (!p) return;
 
-    const cant = carrito[id];
-    if (!cant) {
-      cont.innerHTML = `<button class="btn-agregar" data-add="${id}">+ Agregar</button>`;
-      $('[data-add]', cont).addEventListener('click', () => agregar(id));
-    } else {
-      cont.innerHTML = `
-        <div class="stepper">
-          <button class="step-btn" data-minus="${id}" aria-label="Restar">−</button>
-          <span class="step-cant">${fmtCantidad(cant, p)}</span>
-          <button class="step-btn" data-plus="${id}" aria-label="Sumar">+</button>
-        </div>`;
-      $('[data-minus]', cont).addEventListener('click', () => cambiarCantidad(id, -1));
-      $('[data-plus]',  cont).addEventListener('click', () => cambiarCantidad(id,  1));
-    }
-  });
+  const agotado = p.stock === false;
+  const medidas = medidasDe(p);
+  let sel = medidaSeleccionada[id];
+  if (!medidas.some(m => m.medida === sel)) sel = medidas[0].medida;
+  const m = medidas.find(x => x.medida === sel);
+  const key = claveItem(id, m.medida);
+  const cant = carrito[key];
+
+  let html = '';
+  if (p.dual) {
+    html += `<div class="medida-toggle">` + medidas.map(mm =>
+      `<button type="button" class="med-btn ${mm.medida === sel ? 'active' : ''}" data-med="${mm.medida}">${mm.label === 'kg' ? 'Por kg' : 'Por unidad'}</button>`
+    ).join('') + `</div>`;
+  }
+  if (m.ref) {
+    html += `<div class="store-card-precio"><span class="precio precio-ref">≈ ${fmtDinero(m.precio)}</span><span class="precio-unidad">/ ${m.refDe} (ref.)</span></div>`;
+    html += `<p class="precio-nota">⚖️ ${m.nota}</p>`;
+  } else {
+    html += `<div class="store-card-precio"><span class="precio">${fmtDinero(m.precio)}</span><span class="precio-unidad">/ ${labelLargo(m)}</span></div>`;
+  }
+
+  if (agotado) {
+    html += `<button class="btn-agregar" disabled>Sin stock</button>`;
+  } else if (!cant) {
+    html += `<button class="btn-agregar" data-add>+ Agregar</button>`;
+  } else {
+    html += `<div class="stepper">
+      <button class="step-btn" data-minus aria-label="Restar">−</button>
+      <span class="step-cant">${fmtCantidad(cant, m)}</span>
+      <button class="step-btn" data-plus aria-label="Sumar">+</button>
+    </div>`;
+  }
+  cont.innerHTML = html;
+
+  $$('.med-btn', cont).forEach(b => b.addEventListener('click', () => {
+    medidaSeleccionada[id] = b.dataset.med;
+    pintarDinamico(cont);
+  }));
+  const add = $('[data-add]', cont);   if (add)   add.addEventListener('click', () => agregar(id, sel));
+  const minus = $('[data-minus]', cont); if (minus) minus.addEventListener('click', () => cambiarCantidad(key, -1));
+  const plus = $('[data-plus]', cont);  if (plus)  plus.addEventListener('click', () => cambiarCantidad(key, 1));
 }
 
 // ──────────────────────────────────────────
@@ -290,9 +362,9 @@ function actualizarContador() {
 
 function renderCarrito() {
   const cont = $('#cartItems');
-  const ids = Object.keys(carrito).filter(id => getProducto(id));
+  const keys = Object.keys(carrito).filter(k => getProducto(parseClave(k).id));
 
-  if (!ids.length) {
+  if (!keys.length) {
     cont.innerHTML = `
       <div class="cart-empty">
         <span class="cart-empty-emoji">🛒</span>
@@ -305,25 +377,30 @@ function renderCarrito() {
     return;
   }
 
-  cont.innerHTML = ids.map(id => {
+  cont.innerHTML = keys.map(key => {
+    const { id, medida } = parseClave(key);
     const p = getProducto(id);
-    const cant = carrito[id];
+    const m = medidaDe(p, medida);
+    const cant = carrito[key];
+    const tag = p.dual ? `<span class="cart-medida">${textoMedida(m)}</span>` : '';
+    const precioLinea = m.ref ? `ref. ${fmtDinero(m.precio)} / ${m.refDe}` : `${fmtDinero(m.precio)} / ${labelLargo(m)}`;
+    const subLinea = m.ref ? `<span class="cart-line-sub ref">según kilaje</span>` : `<span class="cart-line-sub">${fmtDinero(m.precio * cant)}</span>`;
     return `
-      <div class="cart-line" data-id="${id}">
+      <div class="cart-line" data-key="${key}">
         <div class="cart-line-img">${p.img ? `<img src="${p.img}" alt="${p.nombre}">` : '🥦'}</div>
         <div class="cart-line-info">
-          <h5>${p.nombre}</h5>
-          <span class="cart-line-precio">${fmtDinero(p.precio)} / ${unidadLarga(p)}</span>
+          <h5>${p.nombre} ${tag}</h5>
+          <span class="cart-line-precio">${precioLinea}</span>
           <div class="cart-line-bottom">
             <div class="stepper stepper-sm">
-              <button class="step-btn" data-minus="${id}" aria-label="Restar">−</button>
-              <span class="step-cant">${fmtCantidad(cant, p)}</span>
-              <button class="step-btn" data-plus="${id}" aria-label="Sumar">+</button>
+              <button class="step-btn" data-minus="${key}" aria-label="Restar">−</button>
+              <span class="step-cant">${fmtCantidad(cant, m)}</span>
+              <button class="step-btn" data-plus="${key}" aria-label="Sumar">+</button>
             </div>
-            <span class="cart-line-sub">${fmtDinero(p.precio * cant)}</span>
+            ${subLinea}
           </div>
         </div>
-        <button class="cart-line-del" data-del="${id}" aria-label="Quitar">✕</button>
+        <button class="cart-line-del" data-del="${key}" aria-label="Quitar">✕</button>
       </div>`;
   }).join('');
 
@@ -389,9 +466,17 @@ function armarMensaje() {
 
   let txt = '¡Hola Verdemente! 🌿 Quiero hacer un pedido:\n\n🛒 *Mi pedido*\n';
 
-  Object.keys(carrito).filter(id => getProducto(id)).forEach(id => {
+  Object.keys(carrito).filter(k => getProducto(parseClave(k).id)).forEach(key => {
+    const { id, medida } = parseClave(key);
     const p = getProducto(id);
-    txt += `• ${fmtCantidad(carrito[id], p)} — ${p.nombre} — ${fmtDinero(p.precio * carrito[id])}\n`;
+    const m = medidaDe(p, medida);
+    const cant = carrito[key];
+    const extra = p.dual ? ` (${textoMedida(m)})` : '';
+    if (m.ref) {
+      txt += `• ${fmtCantidad(cant, m)} — ${p.nombre}${extra} — precio según kilaje (ref. ${fmtDinero(m.precio)}/${m.refDe})\n`;
+    } else {
+      txt += `• ${fmtCantidad(cant, m)} — ${p.nombre}${extra} — ${fmtDinero(m.precio * cant)}\n`;
+    }
   });
 
   txt += `\n💰 *Total estimado:* ${fmtDinero(totalPedido())}\n`;

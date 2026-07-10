@@ -19,7 +19,8 @@
       "Bash(node -e ' *)",
       "PowerShell(\"Abriendo admin.html - vas a ver el bot�n ??? Categor�as.\")",
       "Bash(node --check feedback.js)",
-      "PowerShell(\"Abriendo index.html - vas a ver el bot�n ?? Sugerencias abajo a la derecha.\")"
+      "PowerShell(\"Abriendo index.html - vas a ver el bot�n ?? Sugerencias abajo a la derecha.\")",
+      "PowerShell(\"Abriendo admin.html y tienda.html.\")"
     ]
   }
 }

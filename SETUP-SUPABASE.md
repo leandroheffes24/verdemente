@@ -41,18 +41,25 @@ const SUPABASE_ANON_KEY = "";
 ```sql
 -- Tabla de productos
 create table if not exists public.productos (
-  id        bigint generated always as identity primary key,
-  nombre    text not null,
-  categoria text,
-  precio    numeric not null default 0,
-  unidad    text,
-  por_peso  boolean not null default false,
-  img       text,
-  detalle   text,
-  stock     boolean not null default true,
-  orden     int not null default 0,
-  creado    timestamptz not null default now()
+  id            bigint generated always as identity primary key,
+  nombre        text not null,
+  categoria     text,
+  precio        numeric not null default 0,
+  unidad        text,
+  por_peso      boolean not null default false,
+  dual          boolean not null default false,
+  precio_unidad numeric,
+  img           text,
+  detalle       text,
+  stock         boolean not null default true,
+  orden         int not null default 0,
+  creado        timestamptz not null default now()
 );
+
+-- Si ya tenías la tabla creada de antes, esto agrega las columnas nuevas
+-- (venta por kg Y por unidad). Es seguro correrlo aunque ya existan:
+alter table public.productos add column if not exists dual boolean not null default false;
+alter table public.productos add column if not exists precio_unidad numeric;
 
 -- Seguridad a nivel de fila
 alter table public.productos enable row level security;

@@ -173,6 +173,14 @@ function nombreCat(slug) {
   return (typeof CAT_INFO !== 'undefined' && CAT_INFO[slug]?.nombre) || bonito(slug);
 }
 function textoUnidad(p) { return p.porPeso ? `por ${p.unidad} (por peso)` : `por ${p.unidad}`; }
+function textoPrecio(p) {
+  if (p.dual) {
+    const k = p.precio > 0 ? `${money(p.precio)} /kg` : '— /kg';
+    const u = p.precioUnidad > 0 ? `${money(p.precioUnidad)} /un` : '— /un';
+    return `${k} · ${u}`;
+  }
+  return `${money(p.precio)} · ${textoUnidad(p)}`;
+}
 
 function renderLista() {
   $('#adminCount').textContent = `${productos.length} producto${productos.length === 1 ? '' : 's'}`;
@@ -205,7 +213,7 @@ function renderLista() {
         <h4>${p.nombre} ${p.stock === false ? '<span class="tag-agotado">Sin stock</span>' : ''}</h4>
         <div class="admin-prod-meta">
           <span class="chip-cat">${nombreCat(p.categoria)}</span>
-          <span>${money(p.precio)} · ${textoUnidad(p)}</span>
+          <span>${textoPrecio(p)}</span>
         </div>
         ${p.detalle ? `<p class="admin-prod-det">${p.detalle}</p>` : ''}
       </div>
@@ -254,20 +262,21 @@ function abrirForm(p = null) {
   // Forma de venta
   let tipo = 'kg';
   if (p) {
-    if (p.unidad === 'kg' && p.porPeso) tipo = 'kg';
+    if (p.dual) tipo = 'dual';
+    else if (p.unidad === 'kg' && p.porPeso) tipo = 'kg';
     else if (['unidad', 'atado', 'docena'].includes(p.unidad) && !p.porPeso) tipo = p.unidad;
     else tipo = 'otro';
   }
   $('#f-tipo').value = tipo;
   $('#f-unidad-custom').value = tipo === 'otro' ? (p?.unidad || '') : '';
   $('#f-porpeso').checked = tipo === 'otro' ? !!p?.porPeso : false;
+  $('#f-precio-un').value = (p && p.dual) ? (p.precioUnidad ?? '') : '';
   toggleTipo();
 
   // Resto de campos
   $('#f-nombre').value  = p?.nombre  || '';
   $('#f-precio').value  = p?.precio ?? '';
   $('#f-detalle').value = p?.detalle || '';
-  $('#f-orden').value   = p?.orden ?? '';
   $('#f-img').value     = p?.img || '';
   $('#f-stock').checked = p ? (p.stock !== false) : true;
   actualizarPreview();
@@ -283,7 +292,12 @@ function cerrarForm() {
 }
 
 function toggleTipo() {
-  $('#wrapUnidadCustom').classList.toggle('oculto', $('#f-tipo').value !== 'otro');
+  const tipo = $('#f-tipo').value;
+  $('#wrapUnidadCustom').classList.toggle('oculto', tipo !== 'otro');
+  $('#wrapPrecioUnidad').classList.toggle('oculto', tipo !== 'dual');
+  $('#labelPrecio').innerHTML = (tipo === 'dual')
+    ? 'Precio por kg ($)'
+    : 'Precio ($) <span class="req">*</span>';
 }
 function toggleCategoria() {
   $('#f-categoria-custom').classList.toggle('oculto', $('#f-categoria').value !== '__nueva');
@@ -378,20 +392,32 @@ async function guardar(e) {
   e.preventDefault();
 
   const nombre = $('#f-nombre').value.trim();
-  const precio = parseFloat($('#f-precio').value);
-  if (!nombre)  { $('#f-nombre').focus(); return; }
-  if (isNaN(precio) || precio < 0) { $('#f-precio').focus(); return; }
+  if (!nombre) { $('#f-nombre').focus(); return; }
 
-  // Forma de venta → unidad + porPeso
+  // Forma de venta → unidad + porPeso (+ dual con uno o dos precios)
   const tipo = $('#f-tipo').value;
-  let unidad, porPeso;
-  if (tipo === 'kg')          { unidad = 'kg';     porPeso = true;  }
-  else if (tipo === 'otro')   { unidad = ($('#f-unidad-custom').value.trim() || 'unidad'); porPeso = $('#f-porpeso').checked; }
-  else                        { unidad = tipo;     porPeso = false; }
+  let unidad, porPeso, dual = false, precio, precioUnidad = null;
 
-  // Orden
-  let orden = parseInt($('#f-orden').value, 10);
-  if (isNaN(orden)) orden = (Math.max(0, ...productos.map(p => p.orden || 0)) + 10);
+  if (tipo === 'dual') {
+    dual = true; unidad = 'kg'; porPeso = true;
+    const pk = parseFloat($('#f-precio').value);      // precio por kg
+    const pu = parseFloat($('#f-precio-un').value);   // precio por unidad
+    const kgOK = !isNaN(pk) && pk > 0;
+    const unOK = !isNaN(pu) && pu > 0;
+    if (!kgOK && !unOK) { alert('Cargá al menos un precio: por kg o por unidad.'); $('#f-precio').focus(); return; }
+    precio = kgOK ? pk : 0;            // 0 = sin precio propio (usa el otro como referencia)
+    precioUnidad = unOK ? pu : null;
+  } else {
+    precio = parseFloat($('#f-precio').value);
+    if (isNaN(precio) || precio < 0) { $('#f-precio').focus(); return; }
+    if (tipo === 'kg')        { unidad = 'kg'; porPeso = true; }
+    else if (tipo === 'otro') { unidad = ($('#f-unidad-custom').value.trim() || 'unidad'); porPeso = $('#f-porpeso').checked; }
+    else                      { unidad = tipo; porPeso = false; }
+  }
+
+  // Orden: los productos se muestran alfabéticamente; conservamos el valor previo si existía.
+  const prev = editId ? productos.find(x => String(x.id) === String(editId)) : null;
+  const orden = prev?.orden ?? 0;
 
   const btn = $('#formProducto button[type="submit"]');
   btn.disabled = true;
@@ -417,7 +443,7 @@ async function guardar(e) {
     }
 
     const data = {
-      nombre, categoria, precio, unidad, porPeso,
+      nombre, categoria, precio, unidad, porPeso, dual, precioUnidad,
       detalle: $('#f-detalle').value.trim(),
       img,
       stock: $('#f-stock').checked,

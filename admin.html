@@ -111,26 +111,27 @@
         </div>
 
         <div class="field">
-          <label for="f-precio">Precio ($) <span class="req">*</span></label>
+          <label id="labelPrecio" for="f-precio">Precio ($) <span class="req">*</span></label>
           <input type="number" id="f-precio" placeholder="Ej: 1200" min="0" step="1" required>
         </div>
       </div>
 
-      <div class="grid-2">
-        <div class="field">
-          <label for="f-tipo">Forma de venta <span class="req">*</span></label>
-          <select id="f-tipo">
-            <option value="kg">Por kilo (permite ½, 1, 1½…)</option>
-            <option value="unidad">Por unidad</option>
-            <option value="atado">Por atado</option>
-            <option value="docena">Por docena</option>
-            <option value="otro">Otra (personalizada)…</option>
-          </select>
-        </div>
-        <div class="field" id="wrapOrden">
-          <label for="f-orden">Orden (opcional)</label>
-          <input type="number" id="f-orden" placeholder="Ej: 10" min="0" step="1">
-        </div>
+      <div class="field">
+        <label for="f-tipo">Forma de venta <span class="req">*</span></label>
+        <select id="f-tipo">
+          <option value="kg">Por kilo (permite ½, 1, 1½…)</option>
+          <option value="unidad">Por unidad</option>
+          <option value="atado">Por atado</option>
+          <option value="docena">Por docena</option>
+          <option value="dual">Por kg y por unidad (elige el cliente)</option>
+          <option value="otro">Otra (personalizada)…</option>
+        </select>
+      </div>
+
+      <div class="field oculto" id="wrapPrecioUnidad">
+        <label for="f-precio-un">Precio por unidad ($)</label>
+        <input type="number" id="f-precio-un" placeholder="Ej: 300" min="0" step="1">
+        <p class="img-hint">Con cargar <strong>uno</strong> de los dos precios alcanza. El que dejes vacío toma el otro como <strong>referencia</strong>, y en la tienda se aclara que el total se define según el kilaje.</p>
       </div>
 
       <div id="wrapUnidadCustom" class="unidad-custom oculto">

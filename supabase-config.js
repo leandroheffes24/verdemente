@@ -35,29 +35,33 @@ if (SUPABASE_LISTO && typeof supabase !== 'undefined') {
 // ──────────────────────────────────────────
 function rowToProducto(r) {
   return {
-    id:        r.id,
-    nombre:    r.nombre,
-    categoria: r.categoria,
-    precio:    Number(r.precio),
-    unidad:    r.unidad,
-    porPeso:   !!r.por_peso,
-    img:       r.img,
-    detalle:   r.detalle,
-    stock:     r.stock !== false,
-    orden:     r.orden == null ? null : Number(r.orden),
+    id:           r.id,
+    nombre:       r.nombre,
+    categoria:    r.categoria,
+    precio:       Number(r.precio),
+    unidad:       r.unidad,
+    porPeso:      !!r.por_peso,
+    dual:         !!r.dual,
+    precioUnidad: r.precio_unidad == null ? null : Number(r.precio_unidad),
+    img:          r.img,
+    detalle:      r.detalle,
+    stock:        r.stock !== false,
+    orden:        r.orden == null ? null : Number(r.orden),
   };
 }
 function productoToRow(p) {
   return {
-    nombre:    p.nombre,
-    categoria: p.categoria,
-    precio:    p.precio,
-    unidad:    p.unidad,
-    por_peso:  !!p.porPeso,
-    img:       p.img,
-    detalle:   p.detalle,
-    stock:     p.stock !== false,
-    orden:     p.orden ?? 0,
+    nombre:        p.nombre,
+    categoria:     p.categoria,
+    precio:        p.precio,
+    unidad:        p.unidad,
+    por_peso:      !!p.porPeso,
+    dual:          !!p.dual,
+    precio_unidad: (p.precioUnidad == null || p.precioUnidad === '') ? null : p.precioUnidad,
+    img:           p.img,
+    detalle:       p.detalle,
+    stock:         p.stock !== false,
+    orden:         p.orden ?? 0,
   };
 }
 
@@ -73,10 +77,10 @@ const DB = {
     const { data, error } = await sb
       .from('productos')
       .select('*')
-      .order('orden', { ascending: true })
       .order('nombre', { ascending: true });
     if (error) throw error;
-    return data.map(rowToProducto);
+    // Orden alfabético robusto (ignora mayúsculas y acentos)
+    return data.map(rowToProducto).sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }));
   },
 
   // Carga inicial + se re-carga ante cualquier cambio (Realtime)
