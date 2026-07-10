@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Verdemente – Panel de administración</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,400&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="admin.css">
+  <link rel="icon" type="image/ico" href="./assets/favicon/favicon.ico">
+</head>
+<body class="admin-body">
+
+<!-- NAV -->
+<nav id="mainNav">
+  <a href="index.html" class="nav-logo">
+    <img src="./assets/images/logo.png" alt="Verdemente logo">
+  </a>
+  <div class="admin-nav-right">
+    <span class="admin-badge">🔒 Panel de administración</span>
+    <button id="btnLogout" class="admin-logout oculto">Cerrar sesión</button>
+  </div>
+</nav>
+
+<!-- AVISO: SUPABASE SIN CONFIGURAR -->
+<section id="noConfig" class="admin-config-notice oculto">
+  <div class="config-card">
+    <div class="config-icon">⚙️</div>
+    <h2>Falta configurar Supabase</h2>
+    <p>El panel guarda los productos en una base de datos en la nube (Supabase). Para activarlo, seguí estos pasos una sola vez:</p>
+    <ol>
+      <li>Entrá a <strong>app.supabase.com</strong> y creá un proyecto (es gratis).</li>
+      <li>En <strong>Project Settings → API</strong>, copiá la <strong>Project URL</strong> y la <strong>anon public key</strong>.</li>
+      <li>Pegalas en el archivo <code>supabase-config.js</code>.</li>
+      <li>En el <strong>SQL Editor</strong>, corré el script que crea la tabla <code>productos</code> y sus políticas (está en <code>SETUP-SUPABASE.md</code>).</li>
+      <li>En <strong>Authentication → Users</strong>, creá el usuario de la dueña (email + contraseña, con "Auto Confirm").</li>
+    </ol>
+    <p class="config-hint">Tenés el paso a paso completo en <code>SETUP-SUPABASE.md</code>.</p>
+  </div>
+</section>
+
+<!-- LOGIN -->
+<section id="loginView" class="admin-login oculto">
+  <form id="formLogin" class="login-card">
+    <div class="login-emoji">🥬</div>
+    <h1>Panel privado</h1>
+    <p>Ingresá con tu usuario para administrar la tienda.</p>
+
+    <div class="field">
+      <label for="login-email">Email</label>
+      <input type="email" id="login-email" placeholder="tucorreo@ejemplo.com" autocomplete="username" required>
+    </div>
+    <div class="field">
+      <label for="login-pass">Contraseña</label>
+      <input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password" required>
+    </div>
+
+    <p id="loginError" class="login-error"></p>
+    <button type="submit" class="btn-admin-primary btn-block">Ingresar</button>
+    <a href="index.html" class="login-back">← Volver al sitio</a>
+  </form>
+</section>
+
+<!-- ADMIN -->
+<main id="adminView" class="admin-main oculto">
+  <header class="admin-header">
+    <div>
+      <div class="section-label">Gestión de la tienda</div>
+      <h1 class="admin-title">Productos</h1>
+      <span id="adminCount" class="admin-count">—</span>
+    </div>
+    <div class="admin-actions">
+      <button id="btnSeed" class="btn-admin-ghost oculto">📦 Importar catálogo de ejemplo</button>
+      <button id="btnSugerencias" class="btn-admin-ghost">💬 Sugerencias <span id="sugBadge" class="sug-badge oculto">0</span></button>
+      <button id="btnCategorias" class="btn-admin-ghost">🏷️ Categorías</button>
+      <button id="btnNuevo" class="btn-admin-primary">+ Nuevo producto</button>
+    </div>
+  </header>
+
+  <div class="admin-toolbar">
+    <div class="admin-search">
+      <input type="search" id="adminSearch" placeholder="Buscar producto..." autocomplete="off">
+    </div>
+  </div>
+
+  <div id="adminList" class="admin-list"><!-- filas (JS) --></div>
+</main>
+
+<!-- MODAL FORMULARIO -->
+<div id="formOverlay" class="admin-overlay oculto">
+  <div class="admin-modal">
+    <div class="modal-header">
+      <h3 id="modalTitle">Nuevo producto</h3>
+      <button id="formClose" class="modal-close" aria-label="Cerrar">✕</button>
+    </div>
+
+    <form id="formProducto" class="modal-body" novalidate>
+      <div class="field">
+        <label for="f-nombre">Nombre <span class="req">*</span></label>
+        <input type="text" id="f-nombre" placeholder="Ej: Naranjas" required>
+      </div>
+
+      <div class="grid-2">
+        <div class="field">
+          <label for="f-categoria">Categoría <span class="req">*</span></label>
+          <select id="f-categoria"><!-- opciones dinámicas (JS) --></select>
+          <input type="text" id="f-categoria-custom" class="mt8 oculto" placeholder="Nombre de la nueva categoría">
+        </div>
+
+        <div class="field">
+          <label for="f-precio">Precio ($) <span class="req">*</span></label>
+          <input type="number" id="f-precio" placeholder="Ej: 1200" min="0" step="1" required>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="field">
+          <label for="f-tipo">Forma de venta <span class="req">*</span></label>
+          <select id="f-tipo">
+            <option value="kg">Por kilo (permite ½, 1, 1½…)</option>
+            <option value="unidad">Por unidad</option>
+            <option value="atado">Por atado</option>
+            <option value="docena">Por docena</option>
+            <option value="otro">Otra (personalizada)…</option>
+          </select>
+        </div>
+        <div class="field" id="wrapOrden">
+          <label for="f-orden">Orden (opcional)</label>
+          <input type="number" id="f-orden" placeholder="Ej: 10" min="0" step="1">
+        </div>
+      </div>
+
+      <div id="wrapUnidadCustom" class="unidad-custom oculto">
+        <div class="field">
+          <label for="f-unidad-custom">Nombre de la unidad</label>
+          <input type="text" id="f-unidad-custom" placeholder="Ej: bandeja, bolsa, cajón, planta">
+        </div>
+        <label class="check-inline">
+          <input type="checkbox" id="f-porpeso">
+          <span>Se vende por peso / permite fracciones (½, 1½…)</span>
+        </label>
+      </div>
+
+      <div class="field">
+        <label for="f-detalle">Detalle (opcional)</label>
+        <input type="text" id="f-detalle" placeholder="Ej: Ideales para jugo">
+      </div>
+
+      <div class="field">
+        <label>Imagen</label>
+        <div class="img-upload-row">
+          <button type="button" id="btnSubirImg" class="btn-upload">📷 Subir foto</button>
+          <span id="imgStatus" class="img-status"></span>
+        </div>
+        <input type="file" id="f-file" accept="image/*" class="oculto">
+        <input type="text" id="f-img" class="mt8" placeholder="…o pegá una URL / ruta de imagen">
+        <div class="img-picker" id="imgPicker"><!-- miniaturas (JS) --></div>
+        <p class="img-hint">La foto se comprime automáticamente y se sube al guardar.</p>
+      </div>
+
+      <div class="form-bottom">
+        <div class="img-preview" id="imgPreview">Sin imagen</div>
+        <label class="switch">
+          <input type="checkbox" id="f-stock" checked>
+          <span class="switch-track"></span>
+          <span class="switch-label">Disponible (hay stock)</span>
+        </label>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" id="formCancel" class="btn-admin-ghost">Cancelar</button>
+        <button type="submit" class="btn-admin-primary">Guardar producto</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL CATEGORÍAS -->
+<div id="catOverlay" class="admin-overlay oculto">
+  <div class="admin-modal">
+    <div class="modal-header">
+      <h3>🏷️ Categorías</h3>
+      <button id="catClose" class="modal-close" aria-label="Cerrar">✕</button>
+    </div>
+    <div class="modal-body">
+      <p class="cat-intro">Creá, renombrá, reordená o eliminá las categorías. Podés incluir un emoji en el nombre (ej: <em>🚬 Cigarrillos</em>).</p>
+      <div class="cat-add">
+        <input type="text" id="cat-nueva" placeholder="Nueva categoría (ej: Cigarrillos)">
+        <button type="button" id="btnAddCat" class="btn-admin-primary">Agregar</button>
+      </div>
+      <p id="catError" class="login-error"></p>
+      <div id="catList" class="cat-list"><!-- filas (JS) --></div>
+      <button type="button" id="btnSyncCat" class="btn-admin-ghost cat-sync">🔄 Detectar categorías en uso</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL SUGERENCIAS -->
+<div id="sugOverlay" class="admin-overlay oculto">
+  <div class="admin-modal">
+    <div class="modal-header">
+      <h3>💬 Sugerencias y reportes</h3>
+      <button id="sugClose" class="modal-close" aria-label="Cerrar">✕</button>
+    </div>
+    <div class="modal-body">
+      <p class="cat-intro">Mensajes anónimos que dejó la gente desde la web. No se guarda ningún dato de quién los envió.</p>
+      <div id="sugList" class="sug-list"><!-- mensajes (JS) --></div>
+    </div>
+  </div>
+</div>
+
+<!-- Supabase (SDK vía CDN) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- Configuración + catálogo + lógica -->
+<script src="supabase-config.js"></script>
+<script src="catalogo-seed.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>

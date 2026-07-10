@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verdemente – Tienda online</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,400&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="tienda.css">
+  <link rel="stylesheet" href="feedback.css">
+  <link rel="icon" type="image/ico" href="./assets/favicon/favicon.ico">
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <a href="index.html" class="nav-logo">
+    <img src="./assets/images/logo.png" alt="Verdemente logo">
+  </a>
+  <div class="nav-right">
+    <ul class="nav-links">
+      <li><a class="nav-back" href="index.html">← Volver al inicio</a></li>
+      <li><a href="index.html#contacto">Ubicación</a></li>
+    </ul>
+    <button class="nav-cart js-open-cart" aria-label="Abrir carrito">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2zM7.16 14h9.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1 1 0 0 0 21.16 5H5.21l-.94-2H1v2h2l3.6 7.59-1.35 2.44C4.52 15.37 5.48 17 7 17h12v-2H7.42a.25.25 0 0 1-.22-.37L7.16 14z"/></svg>
+      Carrito
+      <span class="cart-count is-empty">0</span>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO / ENCABEZADO -->
+<header class="store-hero">
+  <div class="hero-bg-circle c1"></div>
+  <div class="hero-bg-circle c2"></div>
+  <div class="store-hero-inner">
+    <div class="hero-badge">Tienda online · Colonia San Miguel Arcángel</div>
+    <h1>Armá tu pedido<br><em>y te lo preparamos</em></h1>
+    <p>Elegí tus frutas, verduras y productos de dietética. Al finalizar te llevamos directo a nuestro WhatsApp con el pedido listo.</p>
+    <div class="store-note">🛵 Envío a domicilio o retiro en el local · 🕐 8–12 y 17–21:30 hs</div>
+  </div>
+</header>
+
+<!-- AVISO DE PRECIOS -->
+<div class="price-banner">
+  <div class="price-banner-inner">
+    <span class="price-banner-icon">⚖️</span>
+    <p>
+      <strong>Sobre los precios:</strong> los valores publicados son orientativos. En los productos que se venden por peso, el importe final puede variar según el <strong>kilaje exacto</strong> de cada producto al momento de preparar tu pedido. Te confirmamos el total definitivo por WhatsApp antes de la entrega.
+    </p>
+  </div>
+</div>
+
+<!-- BARRA DE FILTROS + BUSCADOR -->
+<div class="store-toolbar">
+  <div class="store-cats" id="storeCats"><!-- categorías (JS) --></div>
+  <div class="store-search">
+    <input type="search" id="storeSearch" placeholder="Buscar producto..." autocomplete="off">
+  </div>
+</div>
+
+<!-- GRILLA DE PRODUCTOS -->
+<main class="store-grid-wrap">
+  <div class="store-grid" id="storeGrid"><!-- productos (JS) --></div>
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-logo">
+      <img src="./assets/images/logo.png" alt="Verdemente logo">
+    </div>
+    <div class="footer-tagline">Verdulería & Dietética · Colonia San Miguel Arcángel</div>
+  </div>
+  <ul class="footer-links">
+    <li><a href="index.html#inicio">Inicio</a></li>
+    <li><a href="index.html#productos">Productos</a></li>
+    <li><a href="tienda.html">Tienda online</a></li>
+    <li><a href="index.html#contacto">Contacto</a></li>
+  </ul>
+  <div class="footer-copy">
+    © 2026 Verdemente<br>Todos los derechos reservados<br><br>
+    <span style="opacity:0.6;">Diseñado y desarrollado por</span>
+    <a href="https://www.leandroheffes.com/" target="_blank" style="color:var(--verde-claro);text-decoration:none;font-weight:600;">Leandro Heffes</a>
+  </div>
+</footer>
+
+<!-- BOTÓN CARRITO FLOTANTE (mobile) -->
+<button class="cart-fab js-open-cart" aria-label="Ver carrito">
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2zM7.16 14h9.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1 1 0 0 0 21.16 5H5.21l-.94-2H1v2h2l3.6 7.59-1.35 2.44C4.52 15.37 5.48 17 7 17h12v-2H7.42a.25.25 0 0 1-.22-.37L7.16 14z"/></svg>
+  Ver pedido · <span class="cart-count is-empty">0</span>
+</button>
+
+<!-- ══════════ CARRITO (DRAWER) ══════════ -->
+<div class="cart-overlay" id="cartOverlay"></div>
+
+<aside class="cart-drawer" id="cartDrawer" data-step="items">
+
+  <!-- PASO 1: ITEMS -->
+  <div class="cart-step cart-step-items">
+    <div class="cart-header">
+      <h3>🛒 Tu pedido</h3>
+      <button class="cart-close" id="cartClose" aria-label="Cerrar">✕</button>
+    </div>
+
+    <div class="cart-body" id="cartItems"><!-- items (JS) --></div>
+
+    <div class="cart-footer">
+      <div class="cart-total-row">
+        <span class="lbl">Total estimado</span>
+        <span class="val js-total">$0</span>
+      </div>
+      <p class="cart-total-note">💡 El precio final puede variar según el peso de cada producto.</p>
+      <button class="btn-checkout" id="btnCheckout" disabled>Continuar pedido →</button>
+      <button class="btn-vaciar oculto" id="btnVaciar" type="button">🗑️ Vaciar carrito</button>
+    </div>
+  </div>
+
+  <!-- PASO 2: CHECKOUT -->
+  <div class="cart-step cart-step-checkout">
+    <div class="cart-header">
+      <button class="cart-back" id="btnBackItems">← Volver</button>
+      <button class="cart-close" id="cartClose2" aria-label="Cerrar" onclick="document.getElementById('cartClose').click()">✕</button>
+    </div>
+
+    <div class="checkout-head">
+      <h4>Últimos datos y enviamos tu pedido</h4>
+    </div>
+
+    <form class="checkout-form cart-body" id="formCheckout" novalidate>
+      <div class="field">
+        <label for="form-nombre">Nombre <span class="req">*</span></label>
+        <input type="text" id="form-nombre" placeholder="Tu nombre" autocomplete="name">
+      </div>
+
+      <div class="field">
+        <label for="form-telefono">Teléfono / celular <span class="req">*</span></label>
+        <input type="tel" id="form-telefono" placeholder="Ej: 11 5555 5555" autocomplete="tel">
+      </div>
+
+      <div class="field">
+        <label>¿Cómo lo querés recibir? <span class="req">*</span></label>
+        <div class="entrega-opts">
+          <label class="entrega-opt">
+            <input type="radio" name="entrega" value="retiro" checked>
+            <span class="box"><span class="emo">🏪</span><span class="txt">Retiro en el local</span></span>
+          </label>
+          <label class="entrega-opt">
+            <input type="radio" name="entrega" value="envio">
+            <span class="box"><span class="emo">🛵</span><span class="txt">Envío a domicilio</span></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="field oculto" id="campoDireccion">
+        <label for="form-direccion">Dirección de entrega <span class="req">*</span></label>
+        <input type="text" id="form-direccion" placeholder="Calle, número, entre calles..." autocomplete="street-address">
+      </div>
+
+      <div class="field">
+        <label for="form-comentarios">Comentarios (opcional)</label>
+        <textarea id="form-comentarios" placeholder="Ej: la palta bien madura, horario preferido..."></textarea>
+      </div>
+
+      <div class="checkout-total">
+        <span class="lbl">Total estimado</span>
+        <span class="val js-total">$0</span>
+      </div>
+
+      <button type="submit" class="btn-enviar-wa">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.557 4.116 1.533 5.845L.057 23.5a.5.5 0 0 0 .61.61l5.701-1.486A11.94 11.94 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.794 9.794 0 0 1-5.007-1.378l-.36-.213-3.724.97.993-3.649-.234-.374A9.794 9.794 0 0 1 2.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/></svg>
+        Enviar pedido por WhatsApp
+      </button>
+    </form>
+  </div>
+
+</aside>
+
+<!-- Supabase (SDK vía CDN) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- Configuración + catálogo + lógica -->
+<script src="supabase-config.js"></script>
+<script src="catalogo-seed.js"></script>
+<script src="tienda.js"></script>
+<script src="acceso-admin.js"></script>
+<script src="feedback.js"></script>
+</body>
+</html>

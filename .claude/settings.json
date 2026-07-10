@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node --check tienda.js)",
+      "PowerShell(Start-Process \"c:\\\\Users\\\\Trabajo\\\\Desktop\\\\PROYECTOS\\\\Verdemente\\\\verdemente\\\\tienda.html\")",
+      "PowerShell(\"Abriendo tienda.html en el navegador...\")",
+      "Bash(node --check admin.js)",
+      "Bash(node --check firebase-config.js)",
+      "Bash(node --check catalogo-seed.js)",
+      "PowerShell(Start-Process \"c:\\\\Users\\\\Trabajo\\\\Desktop\\\\PROYECTOS\\\\Verdemente\\\\verdemente\\\\admin.html\")",
+      "PowerShell(\"Abriendo admin.html y tienda.html...\")",
+      "Bash(node --check supabase-config.js)",
+      "Bash(ls -1 *.html *.js *.css *.md)",
+      "Bash(ls firebase-config.js SETUP-FIREBASE.md)",
+      "PowerShell(\"Reabriendo admin.html y tienda.html \\(ahora con Supabase\\)...\")",
+      "Bash(node --check acceso-admin.js)",
+      "PowerShell(Start-Process \"c:\\\\Users\\\\Trabajo\\\\Desktop\\\\PROYECTOS\\\\Verdemente\\\\verdemente\\\\index.html\")",
+      "PowerShell(\"Abriendo index.html - prob� tocar el logo del footer 5 veces \\(o Ctrl+Shift+A\\).\")",
+      "Bash(node -e ' *)",
+      "PowerShell(\"Abriendo admin.html - vas a ver el bot�n ??? Categor�as.\")",
+      "Bash(node --check feedback.js)",
+      "PowerShell(\"Abriendo index.html - vas a ver el bot�n ?? Sugerencias abajo a la derecha.\")"
+    ]
+  }
+}
