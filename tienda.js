@@ -360,9 +360,35 @@ function actualizarContador() {
   });
 }
 
+// Ítems del carrito cuyo precio es "de referencia" (se cobran según kilaje)
+function itemsReferencia() {
+  return Object.keys(carrito).map(key => {
+    const { id, medida } = parseClave(key);
+    const p = getProducto(id);
+    if (!p) return null;
+    const m = medidaDe(p, medida);
+    return m.ref ? { key, p, m, cant: carrito[key] } : null;
+  }).filter(Boolean);
+}
+
+// Aviso destacado: falta el precio de lo elegido por unidad (con su precio por kilo)
+function renderAvisoRef() {
+  const refs = itemsReferencia();
+  const html = !refs.length ? '' : `
+    <div class="ref-aviso">
+      <div class="ref-aviso-head">⚠️ Falta sumar el precio de lo que elegiste por unidad</div>
+      <p class="ref-aviso-sub">Estos productos se pesan y se cobran según su kilaje, así que <strong>el total de arriba todavía no los incluye</strong>. Te confirmamos el monto final por WhatsApp.</p>
+      <ul class="ref-aviso-list">
+        ${refs.map(r => `<li><span>${fmtCantidad(r.cant, r.m)} · ${r.p.nombre}</span><span class="ref-precio">${fmtDinero(r.m.precio)} / ${r.m.refDe}</span></li>`).join('')}
+      </ul>
+    </div>`;
+  $$('.js-ref-aviso').forEach(el => el.innerHTML = html);
+}
+
 function renderCarrito() {
   const cont = $('#cartItems');
   const keys = Object.keys(carrito).filter(k => getProducto(parseClave(k).id));
+  renderAvisoRef();
 
   if (!keys.length) {
     cont.innerHTML = `
@@ -480,7 +506,11 @@ function armarMensaje() {
   });
 
   txt += `\n💰 *Total estimado:* ${fmtDinero(totalPedido())}\n`;
-  txt += '_(El precio final puede variar según el peso)_\n\n';
+  txt += '_(El precio final puede variar según el peso)_\n';
+  if (itemsReferencia().length) {
+    txt += '⚠️ _Falta el precio de los productos elegidos por unidad: se pesan y se cobran según su kilaje (los valores de arriba son de referencia)._\n';
+  }
+  txt += '\n';
   txt += `👤 *Nombre:* ${nombre}\n`;
   txt += `📱 *Teléfono:* ${telefono}\n`;
 

@@ -369,6 +369,43 @@
   font-style: italic;
   color: var(--gris-suave);
 }
+
+/* Aviso: faltan precios (ítems por unidad que se cobran según kilaje) */
+.ref-aviso {
+  background: rgba(245,158,11,0.12);
+  border: 1px solid rgba(245,158,11,0.45);
+  border-radius: 14px;
+  padding: 12px 14px;
+  margin: 12px 0;
+}
+.ref-aviso-head {
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: #b45309;
+  margin-bottom: 5px;
+  line-height: 1.2;
+}
+.ref-aviso-sub {
+  font-size: 0.8rem;
+  color: #92600a;
+  line-height: 1.45;
+  margin-bottom: 10px;
+}
+.ref-aviso-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.ref-aviso-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 0.82rem;
+  color: var(--gris-texto);
+}
+.ref-aviso-list .ref-precio { font-weight: 700; color: #b45309; white-space: nowrap; }
 .store-card-precio .precio {
   font-family: 'Fraunces', serif;
   font-size: 1.35rem;
