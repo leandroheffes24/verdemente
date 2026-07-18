@@ -21,7 +21,8 @@
       "Bash(node --check feedback.js)",
       "PowerShell(\"Abriendo index.html - vas a ver el bot�n ?? Sugerencias abajo a la derecha.\")",
       "PowerShell(\"Abriendo admin.html y tienda.html.\")",
-      "PowerShell(\"Abriendo tienda.html - agreg� un producto dual 'por unidad' y abr� el carrito.\")"
+      "PowerShell(\"Abriendo tienda.html - agreg� un producto dual 'por unidad' y abr� el carrito.\")",
+      "WebSearch"
     ]
   }
 }
