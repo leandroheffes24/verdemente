@@ -13,8 +13,8 @@
 //  Mientras estos valores digan "TU_...", la tienda funciona con el
 //  catálogo de ejemplo y el panel avisa que falta configurar Supabase.
 // ════════════════════════════════════════════════════════════════
-const SUPABASE_URL      = "https://lzmovcrjrnptqjntwxmj.supabase.co";        // ej: https://abcdxyz.supabase.co
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx6bW92Y3Jqcm5wdHFqbnR3eG1qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM2MzkxMDgsImV4cCI6MjA5OTIxNTEwOH0.zKGZ2IbTI48OIBVPH-AZUXEMigoOLIq9-Gq2gjNABPA";   // ej: eyJhbGciOi...
+const SUPABASE_URL      = "https://xghuafngkyisevnzovjj.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhnaHVhZm5na3lpc2V2bnpvdmpqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ1NDE2MjgsImV4cCI6MjEwMDExNzYyOH0.ze6paD5gNog3xKZXaPrNMYfFc4h8PFRl3KvcIHqv7ug";
 
 // Nombre del bucket de Supabase Storage donde se guardan las fotos subidas.
 const STORAGE_BUCKET = "productos";
